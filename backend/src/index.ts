@@ -7,6 +7,15 @@ app.get('/', (req, res) => {
   res.send('Hello, TypeScript Express!');
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+app.get('/api/test', (req, res) => {
+  const name = req.query.name || 'World';
+  res.json({ message: `Hello, ${name}!` });
 });
+
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
+}
+
+export default app;
