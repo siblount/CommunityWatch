@@ -19,11 +19,11 @@
 	// These attributes are not required, they are here just to add labels to ports
 	// and show the important ports that have been forwarded.
 	"portsAttributes": {
-		"3000": {
+		"5000": {
 			"label": "Backend Direct",
 			"onAutoForward": "notify"
 		},
-		"5000" : {
+		"3000" : {
 			"label": "Frontend Server Directly",
 			"onAutoForward": "notify"
 		},
