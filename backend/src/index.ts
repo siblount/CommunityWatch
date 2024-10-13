@@ -1,7 +1,7 @@
 import express from 'express';
 
 const app = express();
-const port = 3000;
+const port = process.env.BACKEND_PORT;
 
 app.get('/', (req, res) => {
   res.send('Hello, TypeScript Express!');

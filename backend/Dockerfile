@@ -2,15 +2,24 @@ FROM node:20
 
 WORKDIR /app
 
-COPY package*.json ./
-COPY shared ../shared
+ARG BACKEND_PORT
+ENV BACKEND_PORT=${BACKEND_PORT}
 
+# Copy package.json files
+COPY package*.json ./
+COPY backend/package*.json ./backend/
+COPY shared/package*.json ./shared/
+
+# Install dependencies
 RUN npm install
 
-COPY . .
+# Copy source code
+COPY backend ./backend
+COPY shared ./shared
 
-RUN npm run build
+# Build shared and backend
+RUN npm run build -w shared && npm run build -w backend
 
-EXPOSE 3000
+EXPOSE ${BACKEND_PORT}
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "start:backend"]

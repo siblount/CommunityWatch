@@ -2,15 +2,21 @@ FROM node:20
 
 WORKDIR /app
 
+# Copy package.json files
 COPY package*.json ./
-COPY shared ../shared
+COPY frontend/package*.json ./frontend/
+COPY shared/package*.json ./shared/
 
+# Install dependencies
 RUN npm install
 
-COPY . .
+# Copy source code
+COPY frontend ./frontend
+COPY shared ./shared
 
-RUN npm run build
+# Build shared and frontend
+RUN npm run build -w shared && npm run build -w frontend
 
-EXPOSE 5000
+EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "start:frontend"]
