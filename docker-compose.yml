@@ -1,0 +1,37 @@
+services:
+  nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: ./docker/nginx/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    # Uncomment this when ready to serve HTTPS! 
+    # volumes:
+    # - ../certs:/etc/nginx/certs
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    expose:
+      - "3000"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./shared:/app/shared
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    expose:
+      - "5000"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./shared:/app/shared
+
+volumes:
+  shared:

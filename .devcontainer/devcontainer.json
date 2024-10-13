@@ -14,7 +14,24 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "npm install"
+	"postCreateCommand": "npm install",
+
+	// These attributes are not required, they are here just to add labels to ports
+	// and show the important ports that have been forwarded.
+	"portsAttributes": {
+		"3000": {
+			"label": "Backend Direct",
+			"onAutoForward": "notify"
+		},
+		"5000" : {
+			"label": "Frontend Server Directly",
+			"onAutoForward": "notify"
+		},
+		"80" :{
+			"label": "CommunityWatch Web App on HTTP",
+			"onAutoForward": "notify"
+		}
+	}
 
 	// Configure tool-specific properties.
 	// "customizations": {},
