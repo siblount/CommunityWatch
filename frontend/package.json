@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test" : "echo 'WARN: Frontend does not have tests - replace this command with a test'"
   },
   "dependencies": {
     "next": "14.2.15",
