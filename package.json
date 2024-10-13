@@ -4,13 +4,14 @@
   "private" : true,
   "workspaces" : [
     "backend",
-    "frontend"
+    "frontend",
+    "shared"
   ],
   "description": "A nonprofit app that connects non-profit organizations and donors together!",
   "main": "index.js",
   "scripts": {
     "dev" : "npm run dev -w backend & npm run dev -w frontend",
-    "build": "npm run build -w backend && npm run build -w frontend",
+    "build": "npm run build -w shared && npm run build -w backend && npm run build -w frontend",
     "start": "npm run start -w backend"
   },
   "author": "",
