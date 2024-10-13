@@ -17,9 +17,9 @@ RUN npm install
 COPY backend ./backend
 COPY shared ./shared
 
-# Build shared
-RUN npm run build -w shared
+# Build shared and backend
+RUN npm run build -w shared && npm run build -w backend
 
 EXPOSE ${BACKEND_PORT}
 
-CMD ["npm", "run", "dev", "-w", "backend"]
+CMD ["npm", "run", "start:backend"]

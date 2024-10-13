@@ -14,9 +14,9 @@ RUN npm install
 COPY frontend ./frontend
 COPY shared ./shared
 
-# Build shared
-RUN npm run build -w shared
+# Build shared and frontend
+RUN npm run build -w shared && npm run build -w frontend
 
 EXPOSE 3000
 
-CMD ["npm", "run", "dev", "-w", "frontend"]
+CMD ["npm", "run", "start:frontend"]

@@ -2,7 +2,7 @@ services:
   nginx:
     build:
       context: ./docker/nginx
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     ports:
       - "80:80"
     depends_on:
@@ -10,19 +10,20 @@ services:
       - backend
     networks:
       - web
-
+    # Uncomment this when ready to serve HTTPS! 
+    # volumes:
+    # - ../certs:/etc/nginx/certs
   backend:
     build:
       context: .
-      dockerfile: backend/Dockerfile
+      dockerfile: backend/Dockerfile.prod
       args:
-        BACKEND_PORT: "5000"
-    ports: 
-      - "5000:5000"
+        BACKEND_PORT : "5000"
+    expose:
+      - "5000"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
     volumes:
-      - ./backend:/app/backend
       - ./shared:/app/shared
     networks:
       - web
@@ -30,13 +31,12 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: frontend/Dockerfile
-    ports:
-      - "3000:3000"
+      dockerfile: frontend/Dockerfile.prod
+    expose:
+      - "3000"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
     volumes:
-      - ./frontend:/app/frontend
       - ./shared:/app/shared
     networks:
       - web
