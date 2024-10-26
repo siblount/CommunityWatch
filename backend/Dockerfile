@@ -5,6 +5,9 @@ WORKDIR /app
 ARG BACKEND_PORT
 ENV BACKEND_PORT=${BACKEND_PORT}
 
+# Create app user
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
 # Copy package.json files
 COPY package*.json ./
 COPY backend/package*.json ./backend/
@@ -17,9 +20,15 @@ RUN npm install
 COPY backend ./backend
 COPY shared ./shared
 
-# Build shared
-RUN npm run build -w shared
+# Build shared and backend
+RUN npm run build -w shared && npm run build -w backend
+
+# Change ownership of the app directory
+RUN chown -R appuser:appuser /app
+
+# Switch to app user
+USER appuser
 
 EXPOSE ${BACKEND_PORT}
 
-CMD ["npm", "run", "dev", "-w", "backend"]
+CMD ["npm", "run", "start:backend"]
