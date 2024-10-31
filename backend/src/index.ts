@@ -18,4 +18,9 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
+// In your main backend Express app
+app.get('/health', (_, res) => {
+  res.status(200).json({ status: 'healthy' });
+});
+
 export default app;
