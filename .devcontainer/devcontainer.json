@@ -27,7 +27,7 @@
 			"label": "Frontend Server Directly",
 			"onAutoForward": "notify"
 		},
-		"80" :{
+		"3080" :{
 			"label": "CommunityWatch Web App on HTTP",
 			"onAutoForward": "notify"
 		}
