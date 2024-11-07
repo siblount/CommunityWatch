@@ -1,102 +1,166 @@
-import Image from "next/image";
+'use client';
+
+import { Suspense, useEffect } from 'react';
+import LoadingSpinner from './components/LoadingSpinner';
+import PostList from './components/PostList';
+import OrganizationFeed, { OrganizationFeedProps } from './components/OrganizationFeed';
+import { getPosts } from './services/postService';
+import { IPost } from '@shared/types';
+import { useState } from 'react';
+
+function HomeContent() {
+  const actionButtons = [
+    { label: 'My Organizations', color: 'bg-purple-500', icon: '🏢' },
+    { label: 'Saved Requests', color: 'bg-blue-500', icon: '⭐' },
+    { label: 'Recent Activity', color: 'bg-green-500', icon: '📊' },
+    { label: 'Volunteer History', color: 'bg-pink-500', icon: '📝' },
+    { label: 'Donation Stats', color: 'bg-amber-500', icon: '📈' },
+  ];
+
+  const [post, setPost] = useState<IPost | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const fetchedPost = await getPosts(1);
+        setPost(fetchedPost[0]);
+      } catch (err: unknown) {
+        console.error("Error fetching post:", err);
+        if (err instanceof Error) setError(err.message);
+        else if (err instanceof String) setError(err.toString());
+        else setError("Error: " + err);
+      }
+    }
+    fetchPost();
+  }, [])
+
+  if (!post) {
+    return <LoadingSpinner/>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
+
+  const sampleFeeds: Array<OrganizationFeedProps> = [
+    {
+      organization: {
+        id: '1',
+        name: 'Green Earth Initiative',
+        profileImage: 'https://placehold.co/200x200?text=GEI',
+        posts: [
+          {
+            type: 'request',
+            id: post._id,
+            title: 'Beach Cleanup Drive',
+            description: 'Join us for our annual beach cleanup event! We need volunteers and supplies to help preserve our coastal ecosystems. Your support can make a huge difference in protecting our marine life.',
+            images: ['https://placehold.co/1200x800?text=Beach+Cleanup'],
+            createdAt: new Date(),
+          },
+          {
+            type: 'thanks',
+            title: 'Thank You for Supporting Our Cause!',
+            description: 'Your recent participation in our environmental initiatives has been invaluable. Thanks to supporters like you, we were able to make significant progress in our mission to protect the environment...',
+            images: ['https://placehold.co/1200x800?text=Thank+You'],
+            createdAt: new Date(),
+            personalMessage: 'Your dedication to environmental conservation inspires us!',
+          },
+        ],
+      }
+    },
+    {
+      organization: {
+        id: '2',
+        name: 'Helping Hands Shelter',
+        profileImage: 'https://placehold.co/200x200?text=HHS',
+        posts: [
+          {
+            type: 'request',
+            id: '6728d989ff3b12f1e7fdc87e',
+            title: 'Winter Clothing Drive',
+            description: "Help us keep our community warm this winter! We're collecting warm clothing items for those in need. Every donation makes a difference in someone's life.",
+            images: ['https://placehold.co/1200x800?text=Clothing+Drive'],
+            createdAt: new Date(),
+          },
+          {
+            type: 'update',
+            title: 'Community Kitchen Success',
+            description: "Last week's community kitchen event was a huge success! We served over 200 meals and brought smiles to many faces. Here's a glimpse of the wonderful moments we shared...",
+            images: ['https://placehold.co/1200x800?text=Community+Kitchen'],
+            createdAt: new Date(),
+          },
+        ],
+      }
+    },
+  ];
+
+
+  return (
+    <div className="container mx-auto px-4 py-8 space-y-8">
+      {/* Welcome section with buttons */}
+      <section className="backdrop-blur-xl bg-glass-medium rounded-xl 
+                         border border-outline-default shadow-glass p-6">
+        <h1 className="text-3xl font-bold text-white mb-6">
+          Welcome to GiveApp
+        </h1>
+
+        {/* Scrollable buttons container with padding for hover effects */}
+        <div className="relative -mx-2 px-2 pb-2"> {/* Added negative margin and padding to maintain alignment */}
+          {/* Scrollable buttons */}
+          <div className="flex space-x-4 overflow-x-auto scrollbar-hide">
+            {actionButtons.map((button, index) => (
+              <button
+                key={index}
+                className={`flex-shrink-0 ${button.color} px-6 py-3 rounded-lg 
+                           font-bold text-white shadow-lg transform transition-all 
+                           duration-300 hover:scale-105 hover:shadow-xl 
+                           hover:ring-2 hover:ring-white/50 hover:-translate-y-0.5
+                           focus:outline-none focus:ring-2 focus:ring-white/50
+                           backdrop-blur-xl bg-opacity-90`}
+              >
+                <span className="flex items-center space-x-2">
+                  <span className="text-xl">{button.icon}</span>
+                  <span>{button.label}</span>
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* History section */}
+      <section className="backdrop-blur-xl bg-glass-medium rounded-xl 
+                         border border-outline-default shadow-glass p-6">
+        <h2 className="text-2xl font-semibold text-white mb-6">
+          History
+        </h2>
+        <div className="space-y-4">
+          <PostList cardType="home" limit={5} />
+        </div>
+      </section>
+
+      {/* Updates from Organizations */}
+      <section className="backdrop-blur-xl bg-glass-medium rounded-xl 
+                         border border-outline-default shadow-glass p-6">
+        <h2 className="text-2xl font-bold text-white mb-6">
+          Updates from Organizations You Follow
+        </h2>
+        
+        <div className="space-y-8">
+          {sampleFeeds.map((org, index) => (
+            <OrganizationFeed key={index} organization={org.organization} />
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-          <li>This ain't just some random website, it's our first hosted one for CommunityWatch!!!</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+    <Suspense fallback={<LoadingSpinner />}>
+      <HomeContent />
+    </Suspense>
   );
 }
