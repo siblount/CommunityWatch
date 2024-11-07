@@ -1,14 +1,8 @@
-FROM nginx:alpine
+FROM nginx:latest
 
-# Remove default Nginx config
-RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx.conf /nginx.conf
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 
-# Copy the custom Nginx config
-COPY nginx.conf /etc/nginx/nginx.conf
+RUN chmod +x /docker-entrypoint.sh
 
-# Create a directory for certificates (for later use)
-RUN mkdir -p /etc/nginx/certs
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
