@@ -33,12 +33,6 @@ app.get('/api/test', (req, res) => {
   res.json({ message: `Hello, ${name}!` });
 });
 
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-  });
-}
-
 // In your main backend Express app
 app.get('/health', (_, res) => {
   res.status(200).json({ status: 'healthy' });
@@ -51,9 +45,11 @@ mongoose.connect(process.env.MONGODB_URI as string)
   })
   .then(() => {
     console.log("Seed data inserted");
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-    });
+    if (process.env.NODE_ENV !== 'test') {
+      app.listen(PORT, () => {
+        console.log(`Server running at http://localhost:${PORT}`);
+      });
+    }
   })
   .catch((error) => {
     console.error('Error connecting to MongoDB:', error);
