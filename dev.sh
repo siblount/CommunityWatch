@@ -42,4 +42,4 @@ echo "FRONTEND_PORT: 3000"
 echo "MONGODB_PORT: 27017"
 
 # Run docker-compose with development configuration
-docker compose --file docker-compose.prod.yml --env-file .env up --build
+docker compose --file docker-compose.yml --env-file .env up --build
