@@ -1,6 +1,6 @@
 # CommunityWatch - Team Documentation
 
-Welcome to the CommunityWatch development team! This README provides essential information for setting up and contributing to the project.
+⚠️ This code no longer reflects CommunityWatch, but rather, a project that was created by me and has been abandoned since. This is entirely for archival purposes. Do not rely on this code as it will contain security vulnerabilities and outdated code. ⚠️ 
 
 ## 🚀 Quick Start
 
